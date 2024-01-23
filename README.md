@@ -11,62 +11,19 @@ For installation instructions see: <https://docs.docker.com/compose/install/>
 
 Start by cloning this repository locally and cd into the `dx-docker-compose` directory.
 
-All you need to do is to load the HCL DX docker images into your local docker repository and set up your local environment with some environment variables.
+All you need to do is to login to Harbor and setup your local environment with some environment variables.
 
-### Loading DX docker images
+### Login to Harbor
 
-The load.sh script expects a path to a directory containing the docker image archives as a command line argument <docker-image-archives-directory>.
-
-> **_NOTE:_** If you already loaded the DX docker images into a docker repository of your choice, you may skip executing `load.sh` or `load.bat`.
-Please make sure to update the image names in the `dx.properties` file appropriately.
-
-Linux/MAC:
+Images are pulled directly from Harbor. You must be login to this service.
 
 ```bash
-cd ./dx-docker-compose
-bash load.sh <docker-image-archives-directory>
-```
-
-Windows:
-
-```bash
-cd ./dx-docker-compose
-load.bat <docker-image-archives-directory>
+docker login hclcr.io
 ```
 
 ### Set up local environment variables
 
-Linux/MAC:
-
-```bash
-cd ./dx-docker-compose
-source ./set.sh
-```
-
-Windows:
-
-```bash
-cd ./dx-docker-compose
-set.bat
-```
-
-> **_NOTE:_** The second command is **source ./set.sh** and not just executing set.sh directly.
-
-If you want to unset your DX docker-compose environment, you can do so by running `unset.sh`:
-
-Linux/MAC:
-
-```bash
-cd ./dx-docker-compose
-source ./unset.sh
-```
-
-Windows:
-
-```bash
-cd ./dx-docker-compose
-unset.bat
-```
+Customise the `.env` file
 
 ### Performance on Mac OS/Windows
 
@@ -223,7 +180,7 @@ ringapi:
     - PORTAL_PORT=10039
     - PORTAL_HOST=example.com
   ports:
-    - "4000:3000"
+    - '4000:3000'
   networks:
     - default
 ```
@@ -330,8 +287,3 @@ To display the logs of the check results, run
 ```bash
 docker-compose logs prereqs-checker
 ```
-
-
-
-
-

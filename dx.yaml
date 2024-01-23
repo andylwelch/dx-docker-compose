@@ -12,36 +12,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-version: "3.8"
+version: '3.8'
 
 services:
   core:
     container_name: dx-core
-    image: ${DX_DOCKER_IMAGE_CORE:?'Missing docker image environment parameter'}
+    image: '${DX_DOCKER_IMAGE_CORE}'
     volumes:
       - ./volumes/core/wp_profile:/opt/HCL/wp_profile
     ports:
-      - "7777:7777"
-      - "10020:10020"
-      - "10039:10039"
-      - "10041:10041"
-      - "10200:10200"
-      - "10202:10202"
-      - "10033:10033"
-      - "10203:10203"
+      - '7777:7777'
+      - '10020:10020'
+      - '10039:10039'
+      - '10041:10041'
+      - '10200:10200'
+      - '10202:10202'
+      - '10033:10033'
+      - '10203:10203'
     networks:
       - default
   ringapi:
     container_name: dx-ringapi
     depends_on:
       - core
-    image: ${DX_DOCKER_IMAGE_RINGAPI:?'Missing docker image environment parameter'}
+    image: '${DX_DOCKER_IMAGE_RING_API}'
     environment:
       - DEBUG=ringapi-server:*
       - PORTAL_PORT=10039
       - PORTAL_HOST=dx-core
     ports:
-      - "4000:3000"
+      - '4000:3000'
     networks:
       - default
   dam:
@@ -49,7 +49,7 @@ services:
     depends_on:
       dam-db-pool:
         condition: service_healthy
-    image: ${DX_DOCKER_IMAGE_DAM:?'Missing docker image environment parameter'}
+    image: '${DX_DOCKER_IMAGE_DAM}'
     environment:
       - DEBUG=INFO:server-v1:*,ERROR:server-v1:*
       - POSTGRES_DB_NAME=dxmediadb
@@ -68,29 +68,29 @@ services:
       - DX_ADMIN=wpsadmin
       - DX_PASSWORD=wpsadmin
     ports:
-      - "3000:3001"
+      - '3000:3001'
     volumes:
       - ./volumes/dam/upload:/opt/app/upload
     networks:
       - default
   image-processor:
     container_name: dx-image-processor
-    image: ${DX_DOCKER_IMAGE_IMAGE_PROCESSOR:?'Missing docker image environment parameter'}
+    image: '${DX_DOCKER_IMAGE_IMAGE_PROCESSOR}'
     environment:
       - DEBUG=INFO:server-v1:*,ERROR:server-v1:*
     ports:
-      - "3500:8080"
+      - '3500:8080'
     networks:
       - default
   cc:
     container_name: dx-cc
-    image: ${DX_DOCKER_IMAGE_CC:?'Missing docker image environment parameter'}
+    image: '${DX_DOCKER_IMAGE_CONTENT_COMPOSER}'
     ports:
-      - "5000:3000"
+      - '5000:3000'
     environment:
       - DEBUG=INFO:server-v1:*,ERROR:server-v1:*
       - PORTAL_PORT=10039
-      - PORTAL_HOST=${DX_HOSTNAME:?'Please set hostname'}
+      - PORTAL_HOST=${DX_HOSTNAME}
       - RING_API_HOST=dx-ringapi
       - RING_API_PORT=3000
     networks:
@@ -98,7 +98,7 @@ services:
   dam-db-node-0:
     container_name: dx-dam-db-node-0
     hostname: dx-dam-db-node-0
-    image: ${DX_DOCKER_IMAGE_DAM_DB_NODE:?'Missing docker image environment parameter'}
+    image: '${DX_DOCKER_IMAGE_DAM_DB_NODE}'
     environment:
       - POSTGRES_DB=dxmediadb
       - POSTGRES_USER=dxuser
@@ -114,19 +114,19 @@ services:
       - SYNCHRONOUS_COMMIT=off
       - SYNCHRONOUS_STANDBY_NAMES="*"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
       interval: 30s
       timeout: 30s
       retries: 3
     ports:
-      - "5433:5432"
+      - '5433:5432'
     volumes:
       - ./volumes/dam/db:/var/lib/pgsql/11/data
     networks:
       - default
   dam-db-pool:
     container_name: dx-dam-db-pool
-    image: ${DX_DOCKER_IMAGE_DAM_DB_CONNECTION_POOL:?'Missing docker image environment parameter'}
+    image: '${DX_DOCKER_IMAGE_DAM_DB_CONNECTION_POOL}'
     ports:
       - 5432:5432
     environment:
@@ -148,12 +148,12 @@ services:
       dam-db-node-0:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "sh scripts/healthcheck.sh"]
+      test: ['CMD-SHELL', 'sh scripts/healthcheck.sh']
       interval: 30s
       timeout: 15s
       retries: 5
   haproxy:
-    image: ${DX_DOCKER_IMAGE_HAPROXY:?'Missing docker image environment parameter'}
+    image: '${DX_DOCKER_IMAGE_HAPROXY}'
     container_name: dx-haproxy
     volumes:
       - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
@@ -162,7 +162,7 @@ services:
     networks:
       - default
   prereqs-checker:
-    image: ${DX_DOCKER_IMAGE_PREREQS_CHECKER:?'Missing docker image environment parameter'}
+    image: '${DX_DOCKER_IMAGE_PREREQS_CHECKER}'
     container_name: dx-prereqs-checker
     environment:
       - CHECK_SCHEDULE=0 8 * * *
